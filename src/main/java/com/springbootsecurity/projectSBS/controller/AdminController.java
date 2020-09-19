@@ -38,7 +38,7 @@ public class AdminController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id, Model model) {
+    public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/allUsers";
     }
@@ -50,32 +50,30 @@ public class AdminController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam Long id, @RequestParam String name,
-                         @RequestParam(required = false) String password,
-                         @RequestParam (required = false) String role1,
-                         @RequestParam (required = false) String role2,
+    public String update(@RequestBody User user,
                          ModelMap model) {
 
-        User oldUser = userService.getUserById(id);
-        oldUser.setName(name);
-
-        if (password != null && !password.equals("")) {
-            oldUser.setPassword(passwordEncoder.encode(password));
-        }
-
-        Set<Role> roles = new HashSet<>();
-
-        if (role1 != null && role2 == null) {
-            roles.add(roleDao.getRoleById(1L));
-        } else if (role2 != null && role1 == null) {
-            roles.add(roleDao.getRoleById(2L));
-        } else if (role1 != null && role2 != null) {
-            roles.add(roleDao.getRoleById(1L));
-            roles.add(roleDao.getRoleById(2L));
-        }
-
-        oldUser.setRoles(roles);
-        userService.updateUser(oldUser);
+//        User oldUser = userService.getUserById(id);
+//        oldUser.setName(name);
+//
+//        if (password != null && !password.equals("")) {
+//            oldUser.setPassword(passwordEncoder.encode(password));
+//        }
+//
+//        Set<Role> roles = new HashSet<>();
+//
+//        if (role1 != null && role2 == null) {
+//            roles.add(roleDao.getRoleById(1L));
+//        } else if (role2 != null && role1 == null) {
+//            roles.add(roleDao.getRoleById(2L));
+//        } else if (role1 != null && role2 != null) {
+//            roles.add(roleDao.getRoleById(1L));
+//            roles.add(roleDao.getRoleById(2L));
+//        }
+//
+//        oldUser.setRoles(roles);
+        userService.updateUser(user);
+        model.addAttribute("user", user);
         return "redirect:/admin/allUsers";
     }
 
@@ -85,28 +83,31 @@ public class AdminController {
     }
 
     @PostMapping("/add")
-    public String addPost(@RequestParam String name,
-                          @RequestParam String password,
-                          @RequestParam (required = false) String role1,
-                          @RequestParam (required = false) String role2,
+//    public String addPost(@RequestParam String name,
+//                          @RequestParam String password,
+//                          @RequestParam (required = false) String role1,
+//                          @RequestParam (required = false) String role2,
+//                          ModelMap model) {
+
+    public String addPost(@RequestBody User user,
                           ModelMap model) {
 
-        User user = new User();
-        user.setName(name);
-        user.setPassword(password);
-
-        Set<Role> roles = new HashSet<>();
-
-        if (role1 != null && role2 == null) {
-            roles.add(roleDao.getRoleById(1L));
-        } else if (role2 != null && role1 == null) {
-            roles.add(roleDao.getRoleById(2L));
-        } else if (role1 != null && role2 != null) {
-            roles.add(roleDao.getRoleById(1L));
-            roles.add(roleDao.getRoleById(2L));
-        }
-
-        user.setRoles(roles);
+//        User user = new User();
+//        user.setName(name);
+//        user.setPassword(password);
+//
+//        Set<Role> roles = new HashSet<>();
+//
+//        if (role1 != null && role2 == null) {
+//            roles.add(roleDao.getRoleById(1L));
+//        } else if (role2 != null && role1 == null) {
+//            roles.add(roleDao.getRoleById(2L));
+//        } else if (role1 != null && role2 != null) {
+//            roles.add(roleDao.getRoleById(1L));
+//            roles.add(roleDao.getRoleById(2L));
+//        }
+//
+//        user.setRoles(roles);
         userService.addUser(user);
         model.addAttribute("user", user);
 

@@ -8,18 +8,20 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+//@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String name;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
    // @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    //@JoinTable(name="users_Role", joinColumns = @JoinColumn (name = "User_id"),
-            //inverseJoinColumns = @JoinColumn(name = "roles_id"))
+//    @JoinTable(name="users_Role", joinColumns = @JoinColumn (name = "User_id"),
+//            inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles;
 
     public User() {
@@ -73,7 +75,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return getRoles();
     }
 
     @Override

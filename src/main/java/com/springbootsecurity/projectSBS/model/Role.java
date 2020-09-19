@@ -3,7 +3,6 @@ package com.springbootsecurity.projectSBS.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,24 +13,12 @@ public class Role implements GrantedAuthority {
     private Long id;
     private String role;
 
-    @ManyToMany(mappedBy = "roles")
-    //@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-//    @JoinTable(name = "users_Role", joinColumns = @JoinColumn(name = "roles_id"),
-//            inverseJoinColumns = @JoinColumn(name = "User_id"))
-    private List<User> users;
-
     public Role() {
     }
 
     public Role(String role) {
         this.role = role;
     }
-
-//    public Role(Long id, String role, List<User> users) {
-//        this.id = id;
-//        this.role = role;
-//        this.users = users;
-//    }
 
     public String getRole() {
         return role;
@@ -41,24 +28,12 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
-//    public List<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<User> users) {
-//        this.users = users;
-//    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return role;
     }
 
     @Override

@@ -9,5 +9,5 @@ public interface RoleDao extends JpaRepository<Role, Long> {
 
     Role getRoleById(long id);
 
-    Role getRoleByName(String name);
+    Role getRoleByRole(String name);
 }

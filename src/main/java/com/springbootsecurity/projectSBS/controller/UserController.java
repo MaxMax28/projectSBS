@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.springbootsecurity.projectSBS.model.User;
 import com.springbootsecurity.projectSBS.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class UserController {
@@ -19,11 +20,14 @@ public class UserController {
 	}
 
 	@GetMapping("/user")
-	public String user(@RequestParam String name, Model model) {
-		User user = userService.getUserByName(name);
-		model.addAttribute("id", user.getId());
-		model.addAttribute("name", user.getName());
-		model.addAttribute("roles", user.getRoles());
+	public String user (Model model, HttpServletRequest request) {
+		User authUser = (User) request.getSession().getAttribute("user");
+		String forRole = "With roles: ";
+		model.addAttribute("name", authUser.getName());
+		model.addAttribute("string", forRole);
+		model.addAttribute("roles", authUser.getRoles());
+		model.addAttribute("user", authUser);
+
 		return "user";
 	}
 }

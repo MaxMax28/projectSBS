@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.springbootsecurity.projectSBS.model.User;
@@ -13,7 +12,6 @@ import com.springbootsecurity.projectSBS.repository.UserDao;
 
 import java.util.List;
 
-@Component
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -46,10 +44,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getOne(id);
     }
 
-    @Override
-    public User getUserByName(String name) {
-        return userDao.getUserByName(name);
-    }
+//    @Override
+//    public User getUserByName(String name) {
+//        return userDao.getUserByName(name);
+//    }
 
     @Override
     public List<User> getAllUsers() {
@@ -64,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userDao.getUserByName(name);
+        User user = userDao.findUserByName(name);
         if(user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found", name));
         }

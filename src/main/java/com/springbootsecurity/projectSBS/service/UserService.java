@@ -13,7 +13,7 @@ public interface UserService extends UserDetailsService {
 
     User getUserById(long id);
 
-    User getUserByName(String name);
+    //User getUserByName(String name);
 
     List<User> getAllUsers();
 
