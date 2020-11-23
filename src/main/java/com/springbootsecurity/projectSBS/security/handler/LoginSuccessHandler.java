@@ -21,27 +21,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         User user = (User) authentication.getPrincipal();
         Set<Role> userRolesList = user.getRoles();
 
-        if (userRolesList.contains(new Role("ROLE_ADMIN"))) {
-            httpServletResponse.sendRedirect("/admin/allUsers");
+        if (userRolesList.contains(new Role("ROLE_USER"))
+//        user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))
+        ) {
+            httpServletResponse.sendRedirect("/user");
         } else {
-                httpServletResponse.sendRedirect("/user" + "?name=" + user.getName());
+            httpServletResponse.sendRedirect("/admin/allUsers");
         }
-
-
-//        for (Role role : userRolesList) {
-//            if (role.getName().equals("ROLE_ADMIN")) {
-//                httpServletResponse.sendRedirect("/admin/allUsers");
-//            } else {
-//                httpServletResponse.sendRedirect("/user" + "?name=" + user.getName());
-//            }
-//            //userRolesList.add(role.getName());
-//        }
-////        if (userRolesList.contains("ROLE_USER") && !userRolesList.contains("ROLE_ADMIN")) {
-//            httpServletResponse.sendRedirect("/user" + "?name=" + user.getName());
-//        } else if (userRolesList.contains("ROLE_ADMIN")) {
-//            httpServletResponse.sendRedirect("/admin/allUsers");
-//        } else {
-//            httpServletResponse.sendRedirect("/");
-//        }
     }
 }

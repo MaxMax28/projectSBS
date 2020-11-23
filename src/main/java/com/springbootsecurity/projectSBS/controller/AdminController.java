@@ -1,116 +1,183 @@
 package com.springbootsecurity.projectSBS.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import com.springbootsecurity.projectSBS.model.Role;
 import com.springbootsecurity.projectSBS.model.User;
-import com.springbootsecurity.projectSBS.repository.RoleDao;
 import com.springbootsecurity.projectSBS.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
 
     private UserService userService;
-    private RoleDao roleDao;
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(UserService userService, RoleDao roleDao, PasswordEncoder passwordEncoder) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.roleDao = roleDao;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/allUsers")
-    public String users(Model model) {
-        List<User> users = userService.getAllUsers();
+    @GetMapping("/admin/allUsers")
+    public String users(Model model, Authentication authentication) {
+        List<User> users = userService.findAll();
+        User userCurrent = (User) authentication.getPrincipal();
         model.addAttribute("users", users);
+        model.addAttribute("userCurrent", userCurrent);
         return "allUsers";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
+    @PostMapping("/admin/delete")
+    public String deleteUser(@ModelAttribute("user") User user) {
+        userService.deleteUserById(user.getId());
         return "redirect:/admin/allUsers";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "updateUser";
-    }
-
-    @PostMapping("/update")
-    public String update(@RequestBody User user,
-                         ModelMap model) {
-
-//        User oldUser = userService.getUserById(id);
-//        oldUser.setName(name);
-//
-//        if (password != null && !password.equals("")) {
-//            oldUser.setPassword(passwordEncoder.encode(password));
-//        }
-//
-//        Set<Role> roles = new HashSet<>();
-//
-//        if (role1 != null && role2 == null) {
-//            roles.add(roleDao.getRoleById(1L));
-//        } else if (role2 != null && role1 == null) {
-//            roles.add(roleDao.getRoleById(2L));
-//        } else if (role1 != null && role2 != null) {
-//            roles.add(roleDao.getRoleById(1L));
-//            roles.add(roleDao.getRoleById(2L));
-//        }
-//
-//        oldUser.setRoles(roles);
+    @PostMapping("/admin/update")
+    public String updateUserPost(@ModelAttribute("user") User user, HttpServletRequest req) {
+        Set<Role> roles = new HashSet<>();
+        try {
+            if (req.getParameter("role").equals("admin")) {
+                roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+            } else if (req.getParameter("role").equals("user")) {
+                roles.add(userService.getRoleByRole("ROLE_USER"));
+            } else if (req.getParameter("role").equals("admin") && req.getParameter("role").equals("user")) {
+                roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+                roles.add(userService.getRoleByRole("ROLE_USER"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        user.setRoles(roles);
         userService.updateUser(user);
-        model.addAttribute("user", user);
         return "redirect:/admin/allUsers";
     }
 
-    @GetMapping("/add")
-    public String addUser() {
-        return "addUser";
-    }
-
-    @PostMapping("/add")
-//    public String addPost(@RequestParam String name,
-//                          @RequestParam String password,
-//                          @RequestParam (required = false) String role1,
-//                          @RequestParam (required = false) String role2,
-//                          ModelMap model) {
-
-    public String addPost(@RequestBody User user,
-                          ModelMap model) {
-
-//        User user = new User();
-//        user.setName(name);
-//        user.setPassword(password);
-//
+    @PostMapping("/admin/add")
+    public String addUserPost(@ModelAttribute("user") User user) {
+//        Set<Role> roles2 = user.getRoles();
 //        Set<Role> roles = new HashSet<>();
 //
-//        if (role1 != null && role2 == null) {
-//            roles.add(roleDao.getRoleById(1L));
-//        } else if (role2 != null && role1 == null) {
-//            roles.add(roleDao.getRoleById(2L));
-//        } else if (role1 != null && role2 != null) {
-//            roles.add(roleDao.getRoleById(1L));
-//            roles.add(roleDao.getRoleById(2L));
+//        try {
+//            for (Role role : roles2) {
+//                if (role.getName().equals("admin")) {
+//                    roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+//                } else if (role.getName().equals("user")) {
+//                    roles.add(userService.getRoleByRole("ROLE_USER"));
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
-//
 //        user.setRoles(roles);
-        userService.addUser(user);
-        model.addAttribute("user", user);
-
+        userService.save(user);
         return "redirect:/admin/allUsers";
     }
 }
+
+
+
+
+
+
+
+
+//
+//
+//
+//
+//package com.springbootsecurity.projectSBS.controller;
+//
+//        import org.springframework.beans.factory.annotation.Autowired;
+//        import org.springframework.security.core.Authentication;
+//        import org.springframework.stereotype.Controller;
+//        import org.springframework.ui.Model;
+//        import org.springframework.web.bind.annotation.*;
+//        import com.springbootsecurity.projectSBS.model.Role;
+//        import com.springbootsecurity.projectSBS.model.User;
+//        import com.springbootsecurity.projectSBS.service.UserService;
+//
+//        import javax.servlet.http.HttpServletRequest;
+//        import java.util.HashSet;
+//        import java.util.List;
+//        import java.util.Set;
+//
+//@Controller
+//@RequestMapping("/admin")
+//public class AdminController {
+//
+//    private UserService userService;
+//
+//    @Autowired
+//    public AdminController(UserService userService) {
+//        this.userService = userService;
+//    }
+//
+//    @GetMapping("/allUsers")
+//    public String users(Model model, Authentication authentication) {
+//        List<User> users = userService.findAll();
+//        User userCurrent = (User) authentication.getPrincipal();
+//        model.addAttribute("users", users);
+//        model.addAttribute("userCurrent", userCurrent);
+//        return "allUsers";
+//    }
+//
+//    @PostMapping("/delete")
+//    public String deleteUser(@ModelAttribute("user") User user) {
+//        userService.deleteUserById(user.getId());
+//        return "redirect:/admin/allUsers";
+//    }
+//
+//    @PostMapping("/update")
+//    public String updateUserPost(@ModelAttribute("user") User user, HttpServletRequest req) {
+//        Set<Role> roles = new HashSet<>();
+//        try {
+//            if (req.getParameter("role").equals("admin")) {
+//                roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+//            } else if (req.getParameter("role").equals("user")) {
+//                roles.add(userService.getRoleByRole("ROLE_USER"));
+//            } else if (req.getParameter("role").equals("admin") && req.getParameter("role").equals("user")) {
+//                roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+//                roles.add(userService.getRoleByRole("ROLE_USER"));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        user.setRoles(roles);
+//        userService.updateUser(user);
+//        return "redirect:/admin/allUsers";
+//    }
+//
+//    @PostMapping("/add")
+//    public String addUserPost(@ModelAttribute("user") User user, HttpServletRequest req) {
+//        Set<Role> roles2 = user.getRoles();
+//        Set<Role> roles = new HashSet<>();
+//
+//        try {
+//            for (Role role : roles2) {
+//                if (role.getName().equals("admin")) {
+//                    roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+//                } else if (role.getName().equals("user")) {
+//                    roles.add(userService.getRoleByRole("ROLE_USER"));
+//                }
+////                else if (req.getParameter("role").equals("admin") && req.getParameter("role").equals("user")) {
+////                    roles.add(userService.getRoleByRole("ROLE_ADMIN"));
+////                    roles.add(userService.getRoleByRole("ROLE_USER"));
+////                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        user.setRoles(roles);
+//        userService.save(user);
+//        return "redirect:/admin/allUsers";
+//    }
+//}

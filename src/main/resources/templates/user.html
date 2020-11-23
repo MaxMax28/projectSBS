@@ -1,31 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:tr="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>User page</title>
 </head>
 <body>
-<h2>User</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Role</th>
-    </tr>
-    </thead>
-    <tbody>
+<div class="container-fluid" style="background-color: rgba(53,58,63,0.99)" >
+    <div class="row">
+        <div class="col-md-11">
+            <a class="navbar-brand" style="color: white"> <b>
+                <tr th:text="${user.name}"></tr>
+                <tr>with roles: </tr>
+                <tr th:text="${user.roles}"></tr>
+            </b></a>
+        </div>
+        <div class="col-md-1">
+            <a class="navbar-brand" style="color:rgba(155,157,160,0.99)" href="/logout">
+                <small>Logout</small>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="row" style="background-color: white">
+    <div class="col-md-2">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <br>
+            <p class="nav-link active"><a href="/user" style="color: white">User</a></p>
+            <p class="nav-link"><a href="/admin/allUsers">Admin</a></p>
+        </div>
+    </div>
 
-    <tr>
-        <td th:text="${id}"></td>
-        <td th:text="${name}"></td>
-        <td th:text="${roles}"></td>
-    </tr>
+    <div class="container-fluid col-md-10" style="background-color: whitesmoke">
+        <br>
+        <h1>User information-page</h1><br>
+        <div>
+            <table style="background-color: white" class="table table-striped" id="userTableForm">
+                <h5>About user</h5><br>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:object="${user}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.roles}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-    <td><a th:href="@{/logout}">Logout</a></td>
-
-    <tbody>
-</table>
-
+<script src="https://code.jquery.com/jquery-3.5.0.js"
+        integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="/user.js"></script>
 </body>
 </html>
